@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Brief Compiler — concept prototype
 
-## Getting Started
+A concept prototype of **Brief Compiler**, an in-house designer tool for turning a visual idea into
+on-brand AI banner imagery through references and swatches instead of prompt-writing. Full product
+context lives in [`../PRD Brief Compiler.md`](../PRD%20Brief%20Compiler.md).
 
-First, run the development server:
+This build implements **Flow A** ("idea, no words") end to end: pick an asset type and format, show
+what you mean with references and swatches, review the compiled prompt, generate a grid of variations,
+then lock what works and refine one control at a time.
+
+## What's real vs. mocked
+
+Everything runs client-side, with no backend and no API keys required:
+
+| Piece | This build | Real version would be |
+| --- | --- | --- |
+| Reference description | Deterministic phrase-bank mock (`src/lib/providers/vision-describer.ts`) | Claude vision |
+| Prompt compilation | Rule-based template filler (`src/lib/providers/prompt-compiler.ts`) | Claude, structured output |
+| Image generation | Deterministic seed-derived SVG tiles (`src/lib/providers/svg-tile.ts`, `image-provider.ts`) | Amazon Nova Canvas via Bedrock |
+| Storage | Browser IndexedDB (`src/lib/store/recipe-store.ts`) — private to your browser, nothing leaves your machine | Postgres + S3/Vercel Blob |
+
+Each mocked piece sits behind a small interface (`VisionDescriber`, `PromptCompiler`, `ImageProvider`),
+so a real provider can be dropped in later without touching the UI.
+
+## Running locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). No environment variables or accounts needed.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm test       # Vitest: schema, compiler rules, format mapping, lock invariants
+npm run lint   # ESLint
+npm run build  # production build / type-check
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## What's implemented
 
-## Learn More
+- Asset type + ad format picker, with per-type "what the model generates / what stays fixed" (R1)
+- Reference upload with an editable mock description (R2)
+- Lighting / palette / mood / composition swatches (R3)
+- Read-only brand constraint chips, always applied (R4)
+- Compiled prompt panel — collapsed (guided) or editable per-segment (expert), edits flagged as overrides (R5)
+- Variation grid (2–8 tiles), each tagged with its seed (R6)
+- Lock a swatch category or a specific seed, then change one thing and regenerate (R7)
+- Every recipe is saved automatically and viewable/exportable as JSON (R9)
+- Recipe history list and a per-recipe detail/export page, with a "continue in workspace" resume flow
 
-To learn more about Next.js, take a look at the following resources:
+## Not in this slice
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Flow B (paste-a-prompt diagnosis, R8), Flow C (adapt-from-recipe lineage, R10), layout/export
+compositing of logo/copy/price with `sharp`, real AWS/Bedrock/Claude wiring, and auth. See the PRD's
+"Requirements" section for the full P0–P2 list.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploying
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This is a static-ish Next.js app with no server dependencies, so it deploys to Vercel with no
+configuration — connect the repo (or run `vercel`) and ship.
