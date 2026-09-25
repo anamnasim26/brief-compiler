@@ -4,12 +4,14 @@ import Button from "@atlaskit/button/default/button";
 import IconButton from "@atlaskit/button/icon/button";
 import Lozenge from "@atlaskit/lozenge";
 import Skeleton from "@atlaskit/skeleton";
+import { cn } from "cn";
 import { ArrowRight, Heart, Sparkles } from "lucide-react";
 import { toAtlaskitIcon } from "@/lib/atlaskit-icon";
 import { StageHeader } from "@/components/workspace/ad-canvas";
-import { GreaseCircle } from "@/components/workspace/marks";
 import { compositeTileDataUri } from "@/lib/providers/svg-tile";
+import { getSwatchOption, type SwatchCategory } from "@/lib/templates/swatches";
 import type { AdFormat, Layout, RecipeOutput, SwatchSelection } from "@/lib/schema/recipe";
+import type { ReactNode } from "react";
 
 const ArrowRightIcon = toAtlaskitIcon(ArrowRight);
 
@@ -28,6 +30,7 @@ export function PickStage({
   layout,
   onToggleFavourite,
   onUse,
+  promptPanel,
 }: {
   outputs: RecipeOutput[];
   generating: boolean;
@@ -37,6 +40,9 @@ export function PickStage({
   layout: Layout;
   onToggleFavourite: (seed: number) => void;
   onUse: (seed: number) => void;
+  /** Rendered inside this stage's own scroll region so it stacks naturally
+   * instead of competing with `flex-1` for space as an external sibling. */
+  promptPanel?: ReactNode;
 }) {
   const aspectRatio = format.width / format.height;
 
@@ -55,24 +61,27 @@ export function PickStage({
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           {generating
             ? Array.from({ length: placeholderCount }).map((_, i) => (
-                <div key={i} style={{ aspectRatio }} className="w-full overflow-hidden">
-                  <Skeleton width="100%" height="100%" borderRadius="0" isShimmering />
+                <div key={i} style={{ aspectRatio }} className="w-full overflow-hidden rounded-xl">
+                  <Skeleton width="100%" height="100%" borderRadius="var(--ds-radius-large)" isShimmering />
                 </div>
               ))
             : outputs.map((output) => {
                 const dataUri = compositeTileDataUri(output.seed, format, swatches, layout);
                 return (
-                  <div key={output.seed} className="overflow-visible border border-frame bg-panel">
-                    <div className="group relative" style={{ aspectRatio }}>
-                      <div className="size-full overflow-hidden">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={dataUri}
-                          alt={`Option, seed ${output.seed}`}
-                          className="size-full object-cover transition-transform duration-200 group-hover:scale-[1.04]"
-                        />
-                      </div>
-                      {output.favourited && <GreaseCircle />}
+                  <div
+                    key={output.seed}
+                    className={cn(
+                      "group overflow-hidden rounded-xl border bg-panel shadow-sm transition-shadow hover:shadow-md",
+                      output.favourited && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                    )}
+                  >
+                    <div className="relative" style={{ aspectRatio }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={dataUri}
+                        alt={`Option, seed ${output.seed}`}
+                        className="size-full object-cover transition-transform duration-200 group-hover:scale-[1.03]"
+                      />
                       <div className="absolute top-2 right-2">
                         <IconButton
                           icon={FavouriteIcon({ filled: output.favourited })}
@@ -85,7 +94,7 @@ export function PickStage({
                         />
                       </div>
                     </div>
-                    <div className="flex items-center justify-between border-t border-frame/40 px-2 py-1.5">
+                    <div className="flex items-center justify-between border-t px-2.5 py-1.5">
                       <span className="font-mono text-[10px] tracking-wide text-muted-foreground">
                         #{String(output.seed).padStart(5, "0")}
                       </span>
@@ -102,6 +111,7 @@ export function PickStage({
             Nothing generated yet — go back to the shot list and hit Generate.
           </p>
         )}
+        {promptPanel && <div className="mt-5">{promptPanel}</div>}
       </div>
     </div>
   );
@@ -116,10 +126,10 @@ export function PickSidebar({ swatches, onEditShotList }: { swatches: SwatchSele
         <p className="mt-1 text-xs text-muted-foreground">Options made from your locked shot list.</p>
       </div>
       <div className="divide-y border-t">
-        {Object.entries(swatches).map(([key, value]) => (
+        {(Object.entries(swatches) as [SwatchCategory, string | null][]).map(([key, value]) => (
           <div key={key} className="flex items-center justify-between py-2 text-xs">
             <span className="capitalize text-muted-foreground">{key}</span>
-            <Lozenge>{value ?? "—"}</Lozenge>
+            <Lozenge>{getSwatchOption(key, value)?.label ?? "—"}</Lozenge>
           </div>
         ))}
       </div>

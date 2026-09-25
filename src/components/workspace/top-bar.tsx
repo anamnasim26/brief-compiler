@@ -48,11 +48,10 @@ export function TopBar({
   const showGenerateButton = step === "shot_list" || step === "pick";
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-4 border-b border-frame/25 bg-panel px-5">
-      <div className="flex items-center gap-1.5 text-sm font-semibold">
-        <span className="font-mono text-primary">[</span>
+    <header className="flex h-14 shrink-0 items-center gap-4 border-b bg-panel px-5">
+      <div className="flex items-center gap-2 text-sm font-semibold">
+        <span className="grid size-5 place-items-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground">B</span>
         Brief Compiler
-        <span className="font-mono text-primary">]</span>
       </div>
 
       <div className="w-52">

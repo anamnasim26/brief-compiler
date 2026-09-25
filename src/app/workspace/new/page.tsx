@@ -286,45 +286,41 @@ function NewWorkspaceInner() {
           )}
 
           {recipe.current_step === "pick" && recipe.format && (
-            <>
-              <PickStage
-                outputs={recipe.outputs}
-                generating={generating}
-                placeholderCount={recipe.generation.variations}
-                format={recipe.format}
-                swatches={recipe.swatches}
-                layout={recipe.layout}
-                onToggleFavourite={toggleFavourite}
-                onUse={useDirection}
-              />
-              {expertMode && recipe.prompt && (
-                <div className="p-4">
+            <PickStage
+              outputs={recipe.outputs}
+              generating={generating}
+              placeholderCount={recipe.generation.variations}
+              format={recipe.format}
+              swatches={recipe.swatches}
+              layout={recipe.layout}
+              onToggleFavourite={toggleFavourite}
+              onUse={useDirection}
+              promptPanel={
+                expertMode && recipe.prompt ? (
                   <PromptPanel prompt={recipe.prompt} expertMode={expertMode} onEditSegment={editSegment} />
-                </div>
-              )}
-            </>
+                ) : null
+              }
+            />
           )}
 
           {recipe.current_step === "refine" && recipe.format && chosen && (
-            <>
-              <RefineStage
-                chosen={chosen}
-                format={recipe.format}
-                swatches={recipe.swatches}
-                layout={recipe.layout}
-                attribute={bracketAttribute}
-                onAttributeChange={attributeChange}
-                bracketOptions={bracketOptions}
-                bracketLoading={bracketLoading}
-                onSelectOption={selectBracketOption}
-                onExport={() => goToStep("export")}
-              />
-              {expertMode && recipe.prompt && (
-                <div className="p-4">
+            <RefineStage
+              chosen={chosen}
+              format={recipe.format}
+              swatches={recipe.swatches}
+              layout={recipe.layout}
+              attribute={bracketAttribute}
+              onAttributeChange={attributeChange}
+              bracketOptions={bracketOptions}
+              bracketLoading={bracketLoading}
+              onSelectOption={selectBracketOption}
+              onExport={() => goToStep("export")}
+              promptPanel={
+                expertMode && recipe.prompt ? (
                   <PromptPanel prompt={recipe.prompt} expertMode={expertMode} onEditSegment={editSegment} />
-                </div>
-              )}
-            </>
+                ) : null
+              }
+            />
           )}
         </section>
 

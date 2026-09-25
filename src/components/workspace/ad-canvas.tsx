@@ -3,12 +3,9 @@ import type { AdFormat } from "@/lib/schema/recipe";
 export function AdCanvas({ dataUri, format, alt = "Ad canvas preview" }: { dataUri: string; format: AdFormat; alt?: string }) {
   const aspectRatio = format.width / format.height;
   return (
-    <div
-      className="flex flex-1 items-center justify-center bg-canvas p-6"
-      style={{ backgroundImage: "radial-gradient(ellipse at center, var(--panel) 0%, transparent 70%)" }}
-    >
+    <div className="flex flex-1 items-center justify-center bg-canvas p-6">
       <div
-        className="relative overflow-hidden border border-frame bg-card"
+        className="relative overflow-hidden rounded-2xl border bg-card shadow-sm"
         style={{ aspectRatio, width: "100%", maxWidth: 560, maxHeight: 480 }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}

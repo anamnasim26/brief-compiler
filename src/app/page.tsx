@@ -14,7 +14,7 @@ import {
 import { useRecipeList } from "@/lib/store/use-recipe";
 import { compositeTileDataUri } from "@/lib/providers/svg-tile";
 import { ASSET_TYPE_TEMPLATES } from "@/lib/templates/asset-types";
-import { EdgeTag } from "@/components/workspace/marks";
+import { Pill } from "@/components/workspace/marks";
 
 const STARTS = [
   { title: "A brief", desc: "Start with a campaign idea", icon: Briefcase, built: false },
@@ -30,8 +30,8 @@ export default function Home() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-14">
-      <EdgeTag className="text-primary">NEW RECIPE</EdgeTag>
-      <h1 className="mt-2 text-4xl font-semibold tracking-tight">What do you have?</h1>
+      <Pill tone="accent">New recipe</Pill>
+      <h1 className="mt-3 text-4xl font-semibold tracking-tight">What do you have?</h1>
       <p className="mt-3 text-sm text-muted-foreground">
         Choose the best starting point. We&apos;ll turn it into a controlled image brief.
       </p>
@@ -40,20 +40,20 @@ export default function Home() {
         {STARTS.map(({ title, desc, icon: Icon, built }) => {
           const inner = (
             <>
-              <span className={cn("mb-7 grid size-10 place-items-center border border-frame/50", built ? "bg-accent text-primary" : "bg-secondary text-muted-foreground")}>
+              <span className={cn("mb-7 grid size-10 place-items-center rounded-lg", built ? "bg-accent text-primary" : "bg-secondary text-muted-foreground")}>
                 <Icon className="size-4" />
               </span>
               <strong className="text-sm">{title}</strong>
               <span className="mt-1.5 text-xs text-muted-foreground">{desc}</span>
               {built && <ArrowRight className="absolute right-4 bottom-4 size-4 text-muted-foreground" />}
-              <EdgeTag className={cn("absolute top-3 right-3", built ? "text-primary" : "")}>
-                {built ? "RECOMMENDED" : "COMING SOON"}
-              </EdgeTag>
+              <Pill className="absolute top-3 right-3" tone={built ? "accent" : "muted"}>
+                {built ? "Recommended" : "Coming soon"}
+              </Pill>
             </>
           );
           const cardClass = cn(
-            "relative flex min-h-[168px] flex-col border p-5 transition-colors",
-            built ? "border-primary bg-panel" : "cursor-not-allowed border-dashed border-frame/40 bg-panel/60 opacity-70"
+            "relative flex min-h-[168px] flex-col rounded-2xl border p-5 transition-all",
+            built ? "border-primary/40 bg-panel shadow-sm hover:shadow-md" : "cursor-not-allowed border-dashed bg-panel/60 opacity-60"
           );
           return built ? (
             <Link key={title} href="/workspace/new" className={cardClass}>
@@ -75,7 +75,7 @@ export default function Home() {
       </div>
       <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-4">
         {!loading && recent.length === 0 && (
-          <p className="col-span-full border border-dashed border-frame/40 p-8 text-center text-xs text-muted-foreground">
+          <p className="col-span-full rounded-2xl border border-dashed p-8 text-center text-xs text-muted-foreground">
             No recipes yet — start one above.
           </p>
         )}
@@ -83,12 +83,16 @@ export default function Home() {
           const chosen = r.outputs.find((o) => o.status === "chosen") ?? r.outputs[0];
           const thumb = r.format && chosen ? compositeTileDataUri(chosen.seed, r.format, r.swatches, r.layout) : null;
           return (
-            <Link key={r.recipe_id} href={`/recipes/${r.recipe_id}`} className="overflow-hidden border border-frame/60 bg-panel">
+            <Link
+              key={r.recipe_id}
+              href={`/recipes/${r.recipe_id}`}
+              className="overflow-hidden rounded-2xl border bg-panel shadow-sm transition-shadow hover:shadow-md"
+            >
               <div className="h-24 bg-secondary">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {thumb && <img src={thumb} alt="" className="size-full object-cover" />}
               </div>
-              <div className="border-t border-frame/40 p-3">
+              <div className="border-t p-3">
                 <strong className="block text-xs">{r.asset_type ? ASSET_TYPE_TEMPLATES[r.asset_type].label : "Untitled draft"}</strong>
                 <span className="mt-1 flex items-center gap-1 font-mono text-[11px] text-muted-foreground">
                   <Clock3 className="size-3" /> {new Date(r.updated_at).toLocaleDateString()} {r.format ? `· ${r.format.name}` : ""}
