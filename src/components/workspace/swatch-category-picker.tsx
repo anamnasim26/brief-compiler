@@ -11,11 +11,11 @@ const UnlockIcon = toAtlaskitIcon(Unlock);
 
 function SwatchPreview({ preview }: { preview: SwatchOption["preview"] }) {
   if (preview.type === "gradient") {
-    return <div className="size-8 rounded-md border border-black/10" style={{ background: preview.css }} />;
+    return <div className="size-8 border border-frame/50" style={{ background: preview.css }} />;
   }
   if (preview.type === "palette") {
     return (
-      <div className="flex size-8 overflow-hidden rounded-md border border-black/10">
+      <div className="flex size-8 overflow-hidden border border-frame/50">
         {preview.colors.slice(0, 3).map((c, i) => (
           <div key={i} className="flex-1" style={{ backgroundColor: c }} />
         ))}
@@ -23,9 +23,9 @@ function SwatchPreview({ preview }: { preview: SwatchOption["preview"] }) {
     );
   }
   return (
-    <div className="relative size-8 rounded-md border border-black/10 bg-muted">
+    <div className="relative size-8 border border-frame/50 bg-muted">
       <div
-        className="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground"
+        className="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary"
         style={{ left: `${preview.x}%`, top: `${preview.y}%` }}
       />
     </div>
@@ -77,8 +77,8 @@ export function SwatchCategoryPicker({
               onClick={() => onSelect(option.id)}
               aria-pressed={selected}
               className={cn(
-                "flex flex-col items-center gap-1 rounded-lg border p-1.5 text-center transition-colors",
-                selected ? "border-primary bg-primary/5" : "border-border hover:bg-muted",
+                "flex flex-col items-center gap-1 border p-1.5 text-center transition-colors",
+                selected ? "border-primary bg-primary/5" : "border-frame/50 hover:bg-muted",
                 (disabled || locked) && !selected && "cursor-not-allowed opacity-50"
               )}
               style={{ width: 76 }}

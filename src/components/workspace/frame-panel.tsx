@@ -3,8 +3,9 @@
 import Button from "@atlaskit/button/default/button";
 import Textfield from "@atlaskit/textfield";
 import { cn } from "cn";
-import { ArrowRight, CircleAlert, LockKeyhole } from "lucide-react";
+import { ArrowRight, CircleAlert } from "lucide-react";
 import { toAtlaskitIcon } from "@/lib/atlaskit-icon";
+import { EdgeTag } from "@/components/workspace/marks";
 import { ASSET_TYPE_LIST } from "@/lib/templates/asset-types";
 import type { AssetType, Layout } from "@/lib/schema/recipe";
 
@@ -32,7 +33,7 @@ function LayoutRow({
         onChange={(e) => onChange(e.currentTarget.value)}
         aria-label={label}
       />
-      <LockKeyhole className="size-3 shrink-0 text-muted-foreground" />
+      <EdgeTag>FIXED</EdgeTag>
     </div>
   );
 }

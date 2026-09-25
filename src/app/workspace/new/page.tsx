@@ -110,9 +110,13 @@ function NewWorkspaceInner() {
 
   async function handleGenerate() {
     if (!recipe || !recipe.asset_type || !recipe.format) return;
-    setGenerating(true);
     const assetType = recipe.asset_type;
     const format = recipe.format;
+    // Step to "pick" before awaiting the provider (not after) so the skeleton
+    // grid and "Generating…" banner in PickStage get a render pass instead
+    // of being skipped by React batching the step change with generating=false.
+    setGenerating(true);
+    update((prev) => ({ ...prev, current_step: "pick" }));
     const compiled = mockPromptCompiler.compile({
       assetType,
       swatches: recipe.swatches,
@@ -130,7 +134,6 @@ function NewWorkspaceInner() {
       prompt: compiled,
       generation: { ...prev.generation, seeds },
       outputs: tiles.map((t) => ({ seed: t.seed, dataUri: t.dataUri, status: "candidate" as const, favourited: false, createdAt: now })),
-      current_step: "pick",
     }));
     setGenerating(false);
   }
@@ -283,31 +286,45 @@ function NewWorkspaceInner() {
           )}
 
           {recipe.current_step === "pick" && recipe.format && (
-            <PickStage
-              outputs={recipe.outputs}
-              generating={generating}
-              placeholderCount={recipe.generation.variations}
-              format={recipe.format}
-              swatches={recipe.swatches}
-              layout={recipe.layout}
-              onToggleFavourite={toggleFavourite}
-              onUse={useDirection}
-            />
+            <>
+              <PickStage
+                outputs={recipe.outputs}
+                generating={generating}
+                placeholderCount={recipe.generation.variations}
+                format={recipe.format}
+                swatches={recipe.swatches}
+                layout={recipe.layout}
+                onToggleFavourite={toggleFavourite}
+                onUse={useDirection}
+              />
+              {expertMode && recipe.prompt && (
+                <div className="p-4">
+                  <PromptPanel prompt={recipe.prompt} expertMode={expertMode} onEditSegment={editSegment} />
+                </div>
+              )}
+            </>
           )}
 
           {recipe.current_step === "refine" && recipe.format && chosen && (
-            <RefineStage
-              chosen={chosen}
-              format={recipe.format}
-              swatches={recipe.swatches}
-              layout={recipe.layout}
-              attribute={bracketAttribute}
-              onAttributeChange={attributeChange}
-              bracketOptions={bracketOptions}
-              bracketLoading={bracketLoading}
-              onSelectOption={selectBracketOption}
-              onExport={() => goToStep("export")}
-            />
+            <>
+              <RefineStage
+                chosen={chosen}
+                format={recipe.format}
+                swatches={recipe.swatches}
+                layout={recipe.layout}
+                attribute={bracketAttribute}
+                onAttributeChange={attributeChange}
+                bracketOptions={bracketOptions}
+                bracketLoading={bracketLoading}
+                onSelectOption={selectBracketOption}
+                onExport={() => goToStep("export")}
+              />
+              {expertMode && recipe.prompt && (
+                <div className="p-4">
+                  <PromptPanel prompt={recipe.prompt} expertMode={expertMode} onEditSegment={editSegment} />
+                </div>
+              )}
+            </>
           )}
         </section>
 

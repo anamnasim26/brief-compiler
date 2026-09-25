@@ -7,6 +7,7 @@ import Skeleton from "@atlaskit/skeleton";
 import { ArrowRight, Heart, Sparkles } from "lucide-react";
 import { toAtlaskitIcon } from "@/lib/atlaskit-icon";
 import { StageHeader } from "@/components/workspace/ad-canvas";
+import { GreaseCircle } from "@/components/workspace/marks";
 import { compositeTileDataUri } from "@/lib/providers/svg-tile";
 import type { AdFormat, Layout, RecipeOutput, SwatchSelection } from "@/lib/schema/recipe";
 
@@ -51,20 +52,27 @@ export function PickStage({
             </span>
           </div>
         )}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           {generating
             ? Array.from({ length: placeholderCount }).map((_, i) => (
-                <div key={i} style={{ aspectRatio }} className="w-full overflow-hidden rounded-md">
-                  <Skeleton width="100%" height="100%" borderRadius="var(--ds-radius-medium)" isShimmering />
+                <div key={i} style={{ aspectRatio }} className="w-full overflow-hidden">
+                  <Skeleton width="100%" height="100%" borderRadius="0" isShimmering />
                 </div>
               ))
             : outputs.map((output) => {
                 const dataUri = compositeTileDataUri(output.seed, format, swatches, layout);
                 return (
-                  <div key={output.seed} className="overflow-hidden rounded-md border bg-panel">
-                    <div className="relative" style={{ aspectRatio }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={dataUri} alt={`Option, seed ${output.seed}`} className="size-full object-cover" />
+                  <div key={output.seed} className="overflow-visible border border-frame bg-panel">
+                    <div className="group relative" style={{ aspectRatio }}>
+                      <div className="size-full overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={dataUri}
+                          alt={`Option, seed ${output.seed}`}
+                          className="size-full object-cover transition-transform duration-200 group-hover:scale-[1.04]"
+                        />
+                      </div>
+                      {output.favourited && <GreaseCircle />}
                       <div className="absolute top-2 right-2">
                         <IconButton
                           icon={FavouriteIcon({ filled: output.favourited })}
@@ -77,8 +85,10 @@ export function PickStage({
                         />
                       </div>
                     </div>
-                    <div className="flex items-center justify-between px-2 py-1.5">
-                      <span className="font-mono text-[10px] text-muted-foreground">Seed #{output.seed}</span>
+                    <div className="flex items-center justify-between border-t border-frame/40 px-2 py-1.5">
+                      <span className="font-mono text-[10px] tracking-wide text-muted-foreground">
+                        #{String(output.seed).padStart(5, "0")}
+                      </span>
                       <Button spacing="compact" iconAfter={ArrowRightIcon} onClick={() => onUse(output.seed)}>
                         Use this
                       </Button>

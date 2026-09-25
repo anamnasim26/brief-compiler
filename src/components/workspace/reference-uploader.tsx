@@ -103,15 +103,15 @@ export function ReferenceUploader({
       {describing ? <p className="text-xs text-muted-foreground">Describing reference…</p> : null}
 
       {references.length === 0 ? (
-        <p className="rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground">
+        <p className="border border-dashed border-frame/50 p-4 text-center text-xs text-muted-foreground">
           Drop in 1-5 references — a moodboard, a past asset, anything that shows what you mean.
         </p>
       ) : (
         <div className="space-y-3">
           {references.map((ref) => (
-            <div key={ref.id} className="flex gap-3 rounded-lg border p-2">
+            <div key={ref.id} className="flex gap-3 border border-frame/50 p-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={ref.dataUrl} alt={ref.fileName} className="size-16 shrink-0 rounded-md object-cover" />
+              <img src={ref.dataUrl} alt={ref.fileName} className="size-16 shrink-0 border border-frame/40 object-cover" />
               <div className="min-w-0 flex-1 space-y-1">
                 <div className="flex items-center justify-between gap-2">
                   <span className="truncate text-xs text-muted-foreground">{ref.fileName}</span>

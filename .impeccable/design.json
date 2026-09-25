@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-25T00:00:00.000Z",
+  "title": "Design System: Brief Compiler",
+  "extensions": {
+    "colorMeta": {
+      "grease-red": {
+        "role": "primary",
+        "displayName": "Grease-pencil Red",
+        "canonical": "oklch(0.543 0.174 29.7)",
+        "tonalRamp": [
+          "oklch(0.16 0.09 29.7)",
+          "oklch(0.25 0.13 29.7)",
+          "oklch(0.34 0.16 29.7)",
+          "oklch(0.43 0.18 29.7)",
+          "oklch(0.543 0.174 29.7)",
+          "oklch(0.63 0.16 29.7)",
+          "oklch(0.75 0.11 29.7)",
+          "oklch(0.89 0.05 29.7)"
+        ]
+      },
+      "red-wash": {
+        "role": "secondary",
+        "displayName": "Red Wash",
+        "canonical": "oklch(0.94 0.03 30)"
+      },
+      "light-table-white": { "role": "neutral", "displayName": "Light-table White", "canonical": "oklch(0.97 0.003 106)" },
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "oklch(0.955 0.004 90)" },
+      "panel-white": { "role": "neutral", "displayName": "Panel White", "canonical": "oklch(1 0 0)" },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "oklch(0.2 0.004 85)" },
+      "ink-muted": { "role": "neutral", "displayName": "Ink, muted", "canonical": "oklch(0.46 0.006 85)" },
+      "frame": { "role": "neutral", "displayName": "Frame", "canonical": "oklch(0.2 0.004 85)" },
+      "stamp-olive": { "role": "success", "displayName": "Stamp Olive", "canonical": "oklch(0.44 0.09 145)" },
+      "amber-flag": { "role": "warning", "displayName": "Amber Flag", "canonical": "oklch(0.68 0.15 70)" },
+      "alarm-red": { "role": "destructive", "displayName": "Alarm Red", "canonical": "oklch(0.55 0.2 25)" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The single landing headline. Not used inside the workspace." },
+      "stageTitle": { "displayName": "Stage Title", "purpose": "Per-stage heading inside the workspace." },
+      "body": { "displayName": "Body", "purpose": "Default size for nearly all UI text." },
+      "caption": { "displayName": "Caption", "purpose": "Secondary/muted copy." },
+      "eyebrow": { "displayName": "Eyebrow", "purpose": "Uppercase section-opening label." },
+      "edgeCode": { "displayName": "Edge-code", "purpose": "Machine-exact values only, formatted like a film negative's printed edge code: seed numbers, hex, character counts." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "tile-hover-scale", "value": "transform: scale(1.04); transition: transform 200ms", "purpose": "The loupe-style hover cue on a Pick-stage grid tile — a slight zoom, as if a loupe were placed over the frame." },
+      { "name": "color-transition", "value": "transition-colors ~150ms", "purpose": "Border/fill color change on hover and selection." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single primary action per stage — Generate, Regenerate, Continue, Export.",
+      "html": "<button class=\"ds-btn-primary\">Generate</button>",
+      "css": ".ds-btn-primary { background: var(--primary, oklch(0.543 0.174 29.7)); color: #fff; padding: 6px 12px; font-size: 0.875rem; font-weight: 500; border: none; border-radius: 3.2px; cursor: pointer; transition: background-color 0.15s; } .ds-btn-primary:hover { background: oklch(0.46 0.19 29.7); } .ds-btn-primary:focus-visible { outline: 2px solid var(--primary, oklch(0.543 0.174 29.7)); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "EdgeTag",
+      "kind": "custom",
+      "refersTo": "edge-tag",
+      "description": "Plain bracketed monospace tag for a fixed/locked value — replaces a lock icon with a literal label.",
+      "html": "<span class=\"ds-edge-tag\">[FIXED]</span>",
+      "css": ".ds-edge-tag { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.02em; color: oklch(0.46 0.006 85); }"
+    },
+    {
+      "name": "GreaseCircle selection mark",
+      "kind": "custom",
+      "refersTo": "swatch-tile-selected",
+      "description": "The system's one selection mark: two overlapping, slightly misaligned hand-drawn-feeling red rings over a chosen tile.",
+      "html": "<div class=\"ds-tile-wrap\"><img class=\"ds-tile-img\" src=\"frame.jpg\" alt=\"\" /><svg class=\"ds-grease-circle\" viewBox=\"0 0 100 100\" aria-hidden=\"true\"><ellipse cx=\"49\" cy=\"52\" rx=\"47\" ry=\"43\" fill=\"none\" stroke=\"var(--primary)\" stroke-width=\"3.5\" stroke-linecap=\"round\" opacity=\"0.9\" transform=\"rotate(-4 49 52)\"/><ellipse cx=\"52\" cy=\"49\" rx=\"44\" ry=\"46\" fill=\"none\" stroke=\"var(--primary)\" stroke-width=\"2.5\" stroke-linecap=\"round\" opacity=\"0.5\" transform=\"rotate(6 52 49)\"/></svg></div>",
+      "css": ".ds-tile-wrap { position: relative; } .ds-tile-img { display: block; width: 100%; object-fit: cover; } .ds-grease-circle { position: absolute; inset: -7%; width: 114%; height: 114%; pointer-events: none; }"
+    },
+    {
+      "name": "Selectable Tile (swatch/asset-type/bracket/image)",
+      "kind": "chip",
+      "refersTo": "frame-tile",
+      "description": "The reused choice pattern: square corners, solid frame border, red-wash fill when selected.",
+      "html": "<button class=\"ds-tile ds-tile-selected\" aria-pressed=\"true\"><span class=\"ds-tile-preview\"></span><span class=\"ds-tile-label\">Soft window</span></button>",
+      "css": ".ds-tile { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 76px; padding: 6px; border: 1px solid oklch(0.2 0.004 85 / 0.5); background: #fff; text-align: center; cursor: pointer; } .ds-tile:hover { background: oklch(0.955 0.004 90); } .ds-tile-selected { border-color: var(--primary, oklch(0.543 0.174 29.7)); background: oklch(0.543 0.174 29.7 / 0.05); } .ds-tile-preview { width: 32px; height: 32px; border: 1px solid oklch(0.2 0.004 85 / 0.5); background: linear-gradient(135deg, oklch(0.94 0.03 30), oklch(0.8 0.1 29)); } .ds-tile-label { font-size: 11px; line-height: 1.2; color: oklch(0.2 0.004 85); }"
+    },
+    {
+      "name": "Wordmark",
+      "kind": "custom",
+      "refersTo": "edge-tag",
+      "description": "The app name folded into the bracket-tag vocabulary — replaces a generic sparkle/wand icon.",
+      "html": "<div class=\"ds-wordmark\"><span class=\"ds-wordmark-bracket\">[</span>Brief Compiler<span class=\"ds-wordmark-bracket\">]</span></div>",
+      "css": ".ds-wordmark { display: flex; align-items: center; gap: 4px; font-size: 0.875rem; font-weight: 600; color: oklch(0.2 0.004 85); } .ds-wordmark-bracket { font-family: 'Geist Mono', ui-monospace, monospace; color: var(--primary, oklch(0.543 0.174 29.7)); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Light Table & Contact Sheet",
+    "overview": "Brief Compiler is a physical production document being marked up by hand — the interface's central act, look at a grid of variations and circle the winner, gets the exact ritual it's already named after in photography. Every screen reads like something that could be stapled into a production binder: light-table white, ruled black frame-lines around every image like sprocket-adjacent negative strips, and one uncompromising grease-pencil red that means exactly one thing everywhere it appears — this is the mark, this is the action. Nothing is decorative; nothing performs trustworthiness with soft gradients or a sparkle icon. It earns trust the way a real contact sheet does, by being legible, exact, and consistent.\n\nThis replaced an earlier, unreviewed default: neutral grays, one soft indigo accent, bordered flat cards on a generic Tailwind/shadcn base, running underneath Atlaskit components still wearing unbranded Atlassian blue. That system was never chosen — it was the shape the framework defaults settle into when nobody picks a world. This one was chosen through Impeccable's direction round (seed 42e6fbdb): six catalog challengers were weighed and declined, and the user picked this direction — Impeccable's own top-ranked grounded candidate — over the assigned build candidate, re-roll, and the standing exit.",
+    "keyCharacteristics": [
+      "One accent color, grease-pencil red, spent on primary actions and the literal hand-drawn \"chosen\" mark — never as decoration",
+      "Solid black 1px frame-lines around every image tile, not soft gray hairlines — sharp corners on frames and marks, barely-eased corners on interactive chrome only",
+      "A plain bracketed monospace tag, [FIXED] / [LOCKED], replaces a lock icon wherever a value never touches the model or won't change this regeneration",
+      "A hand-drawn grease-pencil circle is the system's one selection mark — used only where a human actually chose something",
+      "Atlaskit's own components are rebranded to the same red via its supported theming API, so Button/Lozenge/links/focus rings match the rest of the system",
+      "Dark mode is the same world lit differently: a darkroom safelight rather than a separate identity"
+    ],
+    "rules": [
+      { "name": "The One Red Rule", "body": "Grease-pencil red means exactly two things: a primary action, or a human's hand-drawn choice. It never fills a background, never decorates a badge at rest, and never appears twice for two different reasons on the same screen.", "section": "colors" },
+      { "name": "The Frame vs. Border Rule", "body": "border-frame (solid ink) is reserved for the edge of an image tile. border (translucent ink) is for everything else. Promoting an ordinary divider to border-frame is the tell that this system is being imitated rather than used.", "section": "colors" },
+      { "name": "The Plain Label Rule", "body": "A protected value gets the literal tag [FIXED] or [LOCKED] in Edge-code type, never a lock glyph standing alone.", "section": "typography" },
+      { "name": "The No-Shadow Rule", "body": "A box-shadow never indicates elevation, hover, or selection — those are a border/fill change or the grease-pencil mark.", "section": "elevation" },
+      { "name": "The Sharp Frame Rule", "body": "Anything that holds a generated or reference image gets a square corner and a solid border-frame edge. Rounding an image tile is the fastest way this system starts looking like the generic app it replaced.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do keep grease-pencil red to primary actions and the GreaseCircle mark only (The One Red Rule).",
+      "Do use border-frame (solid) for image-tile edges and border (translucent) for everything else (The Frame vs. Border Rule).",
+      "Do brand every new Atlaskit surface through providers.tsx's theme options rather than letting a component default to Atlassian blue.",
+      "Do use [FIXED] / [LOCKED] (EdgeTag) only where the claim is literally true.",
+      "Do keep image tiles and swatch tiles square-cornered; keep interactive chrome barely-eased."
+    ],
+    "donts": [
+      "Don't round an image or reference tile — that's the tell this system reverted to the generic default (The Sharp Frame Rule).",
+      "Don't introduce a second saturated accent; route anything that isn't the grease-pencil red through ink/paper/frame neutrals.",
+      "Don't add a box-shadow for elevation, hover, or selection state.",
+      "Don't apply GreaseCircle or EdgeTag decoratively — both mean something specific and lose their force the moment they're sprinkled for texture.",
+      "Don't leave a new Atlaskit component unbranded; check it picks up the red, not Atlassian blue, before shipping it."
+    ]
+  }
+}

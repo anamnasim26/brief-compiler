@@ -3,7 +3,7 @@
 import Button from "@atlaskit/button/default/button";
 import Select from "@atlaskit/select";
 import { cn } from "cn";
-import { Check, RefreshCw, Sparkles, WandSparkles } from "lucide-react";
+import { Check, RefreshCw, Sparkles } from "lucide-react";
 import { toAtlaskitIcon } from "@/lib/atlaskit-icon";
 import { WORKSPACE_STEPS, type AdFormat, type WorkspaceStep } from "@/lib/schema/recipe";
 import { AD_FORMATS } from "@/lib/templates/formats";
@@ -48,10 +48,11 @@ export function TopBar({
   const showGenerateButton = step === "shot_list" || step === "pick";
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-4 border-b bg-panel px-5">
-      <div className="flex items-center gap-2 text-sm font-semibold">
-        <WandSparkles className="size-4 text-primary" />
+    <header className="flex h-14 shrink-0 items-center gap-4 border-b border-frame/25 bg-panel px-5">
+      <div className="flex items-center gap-1.5 text-sm font-semibold">
+        <span className="font-mono text-primary">[</span>
         Brief Compiler
+        <span className="font-mono text-primary">]</span>
       </div>
 
       <div className="w-52">

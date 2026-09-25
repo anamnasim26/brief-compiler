@@ -57,6 +57,7 @@ export function ExportScreen({
   }
   const format = recipe.format;
   const artworkUri = compositeTileDataUri(chosen.seed, format, recipe.swatches, recipe.layout);
+  const allChecked = recipe.checklist.productAccurate && recipe.checklist.copySafe && recipe.checklist.noUnexpectedText;
 
   function toggleCheck(key: keyof Checklist) {
     update((prev) => ({ ...prev, checklist: { ...prev.checklist, [key]: !prev.checklist[key] } }));
@@ -88,27 +89,31 @@ export function ExportScreen({
   ];
 
   return (
-    <div className="flex-1 overflow-auto bg-background p-8">
-      <div className="mx-auto max-w-5xl space-y-6">
+    <div className="flex-1 overflow-auto bg-canvas p-6">
+      <div className="mx-auto max-w-5xl space-y-5">
         <div className="flex items-end justify-between">
           <div>
             <button onClick={onBack} className="mb-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
               <ArrowLeft className="size-3.5" /> Back to refine
             </button>
-            <h1 className="text-2xl font-semibold">Ready to hand off</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Your final artwork and the recipe that made it.</p>
+            <h1 className="text-lg font-semibold">Ready to hand off</h1>
+            <p className="mt-0.5 text-xs text-muted-foreground">Your final artwork and the recipe that made it.</p>
           </div>
-          <Button
-            appearance="primary"
-            iconBefore={DownloadIcon}
-            onClick={() => downloadPng(artworkUri, format.width, format.height, `${recipe.recipe_id}.png`)}
-          >
-            Export PNG
-          </Button>
+          <div className="flex flex-col items-end gap-1">
+            <Button
+              appearance="primary"
+              iconBefore={DownloadIcon}
+              isDisabled={!allChecked}
+              onClick={() => downloadPng(artworkUri, format.width, format.height, `${recipe.recipe_id}.png`)}
+            >
+              Export PNG
+            </Button>
+            {!allChecked && <span className="text-[11px] text-muted-foreground">Check all three boxes below to export</span>}
+          </div>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_320px]">
-          <section className="space-y-4 rounded-lg border bg-panel p-4">
+        <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_320px]">
+          <section className="space-y-4 border border-frame/60 bg-panel p-4">
             <div className="flex items-center justify-between text-[10px] font-bold tracking-wide text-muted-foreground uppercase">
               <span>Final artwork</span>
               <span>
@@ -116,18 +121,18 @@ export function ExportScreen({
               </span>
             </div>
             <div
-              className="mx-auto overflow-hidden rounded-md ring-1 ring-foreground/10"
+              className="mx-auto overflow-hidden border border-frame bg-card"
               style={{ aspectRatio: format.width / format.height, maxWidth: 560 }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={artworkUri} alt="Final artwork" className="size-full object-cover" />
             </div>
             <div className="flex flex-wrap items-center gap-4 border-t pt-4">
-              <h3 className="text-xs font-semibold">Final check</h3>
+              <h3 className="text-[10px] font-bold tracking-wide text-muted-foreground uppercase">Final check</h3>
               {CHECKLIST_ITEMS.map((item) => (
                 <button key={item.key} type="button" onClick={() => toggleCheck(item.key)} className="flex items-center gap-1.5 text-[11px]">
                   <span
-                    className={`grid size-4 place-items-center rounded border ${recipe.checklist[item.key] ? "border-success bg-success text-white" : "border-border"}`}
+                    className={`grid size-4 place-items-center border ${recipe.checklist[item.key] ? "border-success bg-success text-white" : "border-frame/50"}`}
                   >
                     {recipe.checklist[item.key] && <Check className="size-2.5" />}
                   </span>
@@ -137,10 +142,10 @@ export function ExportScreen({
             </div>
           </section>
 
-          <aside className="space-y-4 rounded-lg border bg-panel p-4">
+          <aside className="space-y-4 border border-frame/60 bg-panel p-4">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
-                <span className="text-[10px] font-bold text-primary">RECIPE</span>
+                <span className="text-[10px] font-bold tracking-wide text-muted-foreground uppercase">Recipe</span>
                 <h2 className="text-sm font-semibold">{recipe.template_version ?? "Untitled"}</h2>
               </div>
               <span className="font-mono text-[10px] text-muted-foreground">{recipe.recipe_id.slice(0, 12)}</span>
